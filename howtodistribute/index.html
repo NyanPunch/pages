@@ -1,357 +1,61 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>연금저축 적립식 배분 계산기</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #22c55e;
-      --warn: #f59e0b;
-      --danger: #ef4444;
-      --border: #374151;
-      --input: #1f2937;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Arial, Apple Color Emoji, Segoe UI Emoji;
-      background: linear-gradient(180deg,#0b1220,#0f172a 35%,#0b1220);
-      color: var(--text);
-    }
-    .container {
-      max-width: 960px;
-      margin: 32px auto;
-      padding: 0 16px;
-    }
-    .card {
-      background: rgba(17,24,39,.7);
-      backdrop-filter: blur(6px);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    h1 { margin: 0 0 12px; font-size: 22px; }
-    .row {
-      display: grid;
-      grid-template-columns: 1.2fr .8fr 1fr .9fr .9fr auto;
-      gap: 10px;
-      align-items: center;
-      padding: 10px;
-      border: 1px dashed transparent;
-      border-radius: 10px;
-    }
-    .row.header {
-      font-weight: 600;
-      color: var(--muted);
-      padding: 6px 10px;
-    }
-    .row.item {
-      background: rgba(31,41,55,.55);
-      border-color: rgba(55,65,81,.6);
-    }
-    .row.item:hover {
-      background: rgba(31,41,55,.7);
-    }
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 10px 12px;
-      background: var(--input);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      outline: none;
-    }
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 16px 0 8px;
-    }
-    button {
-      background: var(--accent);
-      color: #052e16;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-    button.secondary {
-      background: #334155;
-      color: #d1d5db;
-    }
-    button.danger {
-      background: var(--danger);
-      color: #fff;
-    }
-    .note { color: var(--muted); font-size: 13px; }
-    .warn { color: var(--warn); font-weight: 600; }
-    .total-line {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin: 12px 0 16px;
-    }
-    .total-line input {
-      max-width: 220px;
-      font-weight: 700;
-    }
-    .summary {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #1f2937;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 6px 10px;
-      color: #cbd5e1;
-    }
-    .right {
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
-    .foot {
-      margin-top: 16px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    @media (max-width: 860px) {
-      .row { grid-template-columns: 1fr .7fr 1fr .9fr .9fr auto; }
-    }
-    @media (max-width: 680px) {
-      .row.header { display: none; }
-      .row { grid-template-columns: 1fr 1fr; grid-auto-rows: auto; }
-      .row.item > * { margin: 2px 0; }
-      .row.item .right { text-align: left; }
-    }
-  </style>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1687774535061278"
-     crossorigin="anonymous"></script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KLNBMN45');</script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8" />
+    <title>연금저축 적립식 배분 계산기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="howtodistribute.css" />
+    <script defer src="howtodistribute.js"></script>
+    <!--<link rel="stylesheet" href="../common/theme.css" />
+    <script defer src="../common/theme-toggle.js"></script>-->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1687774535061278"
+            crossorigin="anonymous"></script>
 </head>
-<body>
-  <div class="container">
+<body class="theme-dark">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KLNBMN45"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<div class="container">
+    <!--<div class="toolbar">
+        <button id="themeToggleBtn" aria-pressed="true" type="button">라이트 테마</button>
+    </div>-->
     <div class="card">
-      <h1>연금저축 적립식 배분 계산기</h1>
-      <div class="total-line">
-        <label for="total">월 적립 총액(원)</label>
-        <input id="total" type="number" min="0" step="1000" placeholder="예: 500000" />
-        <button id="calcBtn">계산하기</button>
-        <button id="addRowBtn" class="secondary">행 추가</button>
-        <button id="resetBtn" class="danger">초기화</button>
-      </div>
-      <div class="summary">
-        <span class="badge">퍼센트 합계: <strong id="sumPct">0%</strong></span>
-        <span class="badge">스케일 적용: <strong id="scaleInfo">-</strong></span>
-        <span class="badge">행 개수: <strong id="rowCount">0</strong></span>
-      </div>
-
-      <div class="row header">
-        <div>종목/메모</div>
-        <div class="right">비중(%)</div>
-        <div class="right">1주 가격(원, 선택)</div>
-        <div class="right">배분 금액(원)</div>
-        <div class="right">매수 주수(주)</div>
-        <div></div>
-      </div>
-      <div id="rows"></div>
-
-      <div class="foot">
-        - 퍼센트 합이 100%가 아니어도 총합 대비 비율로 자동 스케일링하여 배분합니다.<br />
-        - 주수는 소수점 불가 가정으로 내림 처리합니다. 수수료/세금은 미포함입니다.<br />
-        - 데이터는 브라우저에 자동 저장됩니다.
-      </div>
+        <h1>연금저축 적립식 배분 계산기</h1>
+        <div class="total-line">
+            <label for="total">월 적립 총액(원)</label>
+            <input id="total" type="number" min="0" step="1000" placeholder="예: 500000" />
+            <button id="calcBtn">계산하기</button>
+            <button id="addRowBtn" class="secondary">행 추가</button>
+            <button id="resetBtn" class="danger">초기화</button>
+        </div>
+        <div class="summary">
+            <span class="badge">퍼센트 합계: <strong id="sumPct">0%</strong></span>
+            <span class="badge">스케일 적용: <strong id="scaleInfo">-</strong></span>
+            <span class="badge">행 개수: <strong id="rowCount">0</strong></span>
+        </div>
+        <div class="row header">
+            <div>종목/메모</div>
+            <div class="right">비중(%)</div>
+            <div class="right">1주 가격(원, 선택)</div>
+            <div class="right">배분 금액(원)</div>
+            <div class="right">매수 주수(주)</div>
+            <div></div>
+        </div>
+        <div id="rows"></div>
+        <div class="foot">
+            - 퍼센트 합이 100%가 아니어도 총합 대비 비율로 자동 스케일링하여 배분합니다.<br />
+            - 주수는 소수점 불가 가정으로 내림 처리합니다. 수수료/세금은 미포함입니다.<br />
+            - 데이터는 브라우저에 자동 저장됩니다.
+        </div>
     </div>
-  </div>
-
-  <script>
-    const rowsEl = document.getElementById('rows');
-    const addRowBtn = document.getElementById('addRowBtn');
-    const calcBtn = document.getElementById('calcBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const totalEl = document.getElementById('total');
-    const sumPctEl = document.getElementById('sumPct');
-    const scaleInfoEl = document.getElementById('scaleInfo');
-    const rowCountEl = document.getElementById('rowCount');
-
-    const LS_KEY = 'pension-dca-rows-v1';
-    const LS_TOTAL_KEY = 'pension-dca-total-v1';
-
-    function createRow(data = {}) {
-      const row = document.createElement('div');
-      row.className = 'row item';
-
-      row.innerHTML = `
-        <input class="name" type="text" placeholder="예: S&P500, 타겟데이트, 메모 등" value="${data.name || ''}" />
-        <input class="pct right" type="number" min="0" step="0.1" placeholder="예: 25" value="${data.pct ?? ''}" />
-        <input class="price right" type="number" min="0" step="1" placeholder="예: 45000" value="${data.price ?? ''}" />
-        <div class="alloc right">-</div>
-        <div class="shares right">-</div>
-        <button class="secondary remove">삭제</button>
-      `;
-
-      // 이벤트: 입력 변화 시 합계 갱신 및 저장
-      row.querySelector('.pct').addEventListener('input', onAnyInputChange);
-      row.querySelector('.price').addEventListener('input', onAnyInputChange);
-      row.querySelector('.name').addEventListener('input', debounce(persistState, 300));
-      row.querySelector('.remove').addEventListener('click', () => {
-        row.remove();
-        updateSummary();
-        persistState();
-      });
-
-      rowsEl.appendChild(row);
-      updateSummary();
-      return row;
-    }
-
-    function getRowsData() {
-      return Array.from(rowsEl.querySelectorAll('.row.item')).map(r => ({
-        name: r.querySelector('.name').value.trim(),
-        pct: parseFloat(r.querySelector('.pct').value),
-        price: parseFloat(r.querySelector('.price').value),
-        allocEl: r.querySelector('.alloc'),
-        sharesEl: r.querySelector('.shares'),
-      }));
-    }
-
-    function formatCurrency(v) {
-      if (!isFinite(v)) return '-';
-      return Math.round(v).toLocaleString('ko-KR');
-    }
-
-    function updateSummary() {
-      const rows = getRowsData();
-      const sumPct = rows.reduce((acc, r) => acc + (isFinite(r.pct) ? r.pct : 0), 0);
-      sumPctEl.textContent = `${(Math.round(sumPct * 10) / 10).toFixed(1)}%`;
-      rowCountEl.textContent = String(rows.length);
-      scaleInfoEl.textContent = sumPct > 0 ? `총합 ${sumPct.toFixed(1)}% 기준 비례 배분` : '-';
-    }
-
-    function calculate() {
-      const total = parseFloat(totalEl.value);
-      if (!isFinite(total) || total <= 0) {
-        alert('월 적립 총액(원)을 올바르게 입력하세요.');
-        return;
-      }
-      const rows = getRowsData();
-      const sumPctRaw = rows.reduce((acc, r) => acc + (isFinite(r.pct) ? r.pct : 0), 0);
-
-      if (sumPctRaw <= 0) {
-        alert('퍼센트를 한 개 이상 입력하세요.');
-        return;
-      }
-
-      const scale = 100 / sumPctRaw; // 합이 100이 아니어도 비례 스케일
-      const warnings = [];
-
-      rows.forEach(r => {
-        const pct = isFinite(r.pct) ? r.pct : 0;
-        const alloc = total * (pct / sumPctRaw); // 비례 배분
-        r.allocEl.textContent = formatCurrency(alloc);
-
-        if (isFinite(r.price) && r.price > 0) {
-          const shares = Math.floor(alloc / r.price);
-          r.sharesEl.textContent = isFinite(shares) ? shares.toString() : '-';
-          if (shares === 0 && alloc > 0) {
-            warnings.push(`${r.name || '항목'}: 배분 금액으로 1주 매수가 불가`);
-          }
-        } else {
-          r.sharesEl.textContent = '-';
-        }
-      });
-
-      updateSummary();
-
-      // 퍼센트 합 안내
-      if (Math.abs(sumPctRaw - 100) > 0.001) {
-        const msg = `퍼센트 합계가 ${sumPctRaw.toFixed(1)}% 입니다.\n총액 대비 비례(스케일 ${scale.toFixed(3)}x)로 배분했습니다.`;
-        console.info(msg);
-      }
-
-      if (warnings.length) {
-        console.warn(warnings.join('\n'));
-      }
-
-      persistState();
-    }
-
-    function persistState() {
-      const rows = getRowsData().map(r => ({
-        name: r.name,
-        pct: isFinite(r.pct) ? r.pct : '',
-        price: isFinite(r.price) ? r.price : '',
-      }));
-      localStorage.setItem(LS_KEY, JSON.stringify(rows));
-      const total = parseFloat(totalEl.value);
-      if (isFinite(total)) localStorage.setItem(LS_TOTAL_KEY, String(total));
-    }
-
-    function restoreState() {
-      const savedRows = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-      const savedTotal = localStorage.getItem(LS_TOTAL_KEY);
-      if (savedTotal) totalEl.value = savedTotal;
-      if (savedRows.length === 0) {
-        // 기본 3행 예시
-        createRow({ name: 'S&P500', pct: 60, price: '' });
-        createRow({ name: '나스닥100', pct: 20, price: '' });
-        createRow({ name: '다우존스', pct: 10, price: '' });
-        createRow({ name: '금현물', pct: 5, price: ''});
-        createRow({ name: '채권',pct: 5, price: ''})
-      } else {
-        savedRows.forEach(r => createRow(r));
-      }
-      updateSummary();
-    }
-
-    function onAnyInputChange() {
-      updateSummary();
-      // 계산값은 버튼으로 확정
-      persistState();
-    }
-
-    function debounce(fn, wait = 200) {
-      let t;
-      return (...args) => {
-        clearTimeout(t);
-        t = setTimeout(() => fn.apply(null, args), wait);
-      };
-    }
-
-    // 이벤트 바인딩
-    addRowBtn.addEventListener('click', () => {
-      createRow();
-      persistState();
-    });
-    calcBtn.addEventListener('click', calculate);
-    resetBtn.addEventListener('click', () => {
-      if (!confirm('모든 입력을 초기화할까요?')) return;
-      rowsEl.innerHTML = '';
-      totalEl.value = '';
-      localStorage.removeItem(LS_KEY);
-      localStorage.removeItem(LS_TOTAL_KEY);
-      restoreState();
-    });
-
-    // 초기 복원
-    restoreState();
-  </script>
+</div>
 </body>
 </html>
-

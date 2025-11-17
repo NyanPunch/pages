@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가계부 (수입/지출 관리) 💰</title>
+    <link rel="stylesheet" href="moneydash.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <button id="manage-categories-btn" style="float: right; margin-top: -55px; padding: 8px 15px; background-color: #fbbc05; color: #333; border: none; border-radius: 5px; cursor: pointer;">
+        카테고리 관리 ⚙️
+    </button>
+    <h1>가계부 (수입/지출 관리) 💰</h1>
+    <div id="summary-area" style="margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #fafafa;">
+        <h2>월별 분석</h2>
+        <div style="margin-bottom: 15px;">
+            <label for="month-filter" style="font-weight: bold;">월 선택:</label>
+            <select id="month-filter" style="padding: 8px; border-radius: 5px;"></select>
+        </div>
+
+        <div style="display: flex; gap: 20px; justify-content: space-around; flex-wrap: wrap;">
+            <div style="width: 45%; min-width: 250px;">
+                <h3>지출 비중 (Expense)</h3>
+                <canvas id="expenseChart"></canvas>
+            </div>
+            <div style="width: 45%; min-width: 250px;">
+                <h3>수입 비중 (Income)</h3>
+                <canvas id="incomeChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div id="forms-container">
+
+        <form id="expense-form" class="transaction-form">
+            <h3>💸 지출 내역 입력</h3>
+            <div class="form-group">
+                <label for="expense-date">날짜</label>
+                <input type="date" id="expense-date" required>
+            </div>
+            <div class="form-group">
+                <label for="expense-amount">금액 (원)</label>
+                <input type="number" id="expense-amount" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="expense-category">카테고리</label>
+                <select id="expense-category" required>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="expense-description">내용</label>
+                <input type="text" id="expense-description">
+            </div>
+            <button type="submit" class="add-btn expense-btn">지출 추가</button>
+        </form>
+
+        <form id="income-form" class="transaction-form">
+            <h3>💰 수입 내역 입력</h3>
+            <div class="form-group">
+                <label for="income-date">날짜</label>
+                <input type="date" id="income-date" required>
+            </div>
+            <div class="form-group">
+                <label for="income-amount">금액 (원)</label>
+                <input type="number" id="income-amount" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="income-category">카테고리</label>
+                <select id="income-category" required>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="income-description">내용</label>
+                <input type="text" id="income-description">
+            </div>
+            <button type="submit" class="add-btn income-btn">수입 추가</button>
+        </form>
+    </div>
+
+    <h2>거래 내역</h2>
+    <div class="list-header">
+        <div>날짜</div>
+        <div>유형</div>
+        <div>카테고리 / 내용</div>
+        <div>금액</div>
+        <div></div> </div>
+    <ul id="transactions-list">
+    </ul>
+</div>
+<div id="category-modal" style="display: none; position: fixed; z-index: 10; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px;">
+        <h2>카테고리 관리</h2>
+
+        <div style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <h3>지출 (Expense)</h3>
+                <ul id="expense-category-list" style="list-style: none; padding: 0;"></ul>
+                <input type="text" id="new-expense-category" placeholder="새 지출 카테고리" style="width: 70%; padding: 5px;">
+                <button id="add-expense-category-btn" style="padding: 5px;">추가</button>
+            </div>
+
+            <div style="flex: 1;">
+                <h3>수입 (Income)</h3>
+                <ul id="income-category-list" style="list-style: none; padding: 0;"></ul>
+                <input type="text" id="new-income-category" placeholder="새 수입 카테고리" style="width: 70%; padding: 5px;">
+                <button id="add-income-category-btn" style="padding: 5px;">추가</button>
+            </div>
+        </div>
+
+        <button id="close-modal-btn" style="margin-top: 20px; padding: 10px 20px; background-color: #ccc; border: none; border-radius: 5px; cursor: pointer;">닫기</button>
+    </div>
+</div>
+<script src="moneydash.js"></script>
+</body>
+</html>

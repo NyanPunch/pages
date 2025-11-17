@@ -1,102 +1,32 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KLNBMN45');</script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>복권 번호 생성기 🎰</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background-color: #f0f2f5;
-            color: #333;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
-        }
-        h1 {
-            color: #1a73e8;
-            margin-bottom: 20px;
-        }
-        .section {
-            margin-bottom: 30px;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #fafafa;
-        }
-        .section h2 {
-            margin-top: 0;
-            color: #444;
-        }
-        .input-group {
-            margin-bottom: 15px;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .input-group input, .input-group select {
-            width: 80%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #4285f4;
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        button:hover {
-            background-color: #357ae8;
-            transform: translateY(-2px);
-        }
-        .numbers {
-            margin-top: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #e84242;
-            min-height: 30px;
-            white-space: pre-wrap;
-            line-height: 1.5;
-        }
-
-        .github-link {
-            font-size: 12px;
-            color: #777;
-            text-decoration: none;
-            margin-bottom: -10px;
-            display: block;
-        }
-        .github-link:hover {
-            color: #4285f4;
-            text-decoration: underline;
-        }
-    </style>
-
+    <link rel="stylesheet" href="showmethemoney.css">
+    <script src="showmethemoney.js"></script>
+    <!--<link rel="stylesheet" href="../common/theme.css" />
+    <script defer src="../common/theme-toggle.js"></script>-->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1687774535061278"
      crossorigin="anonymous"></script>
 </head>
 <body>
-
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KLNBMN45"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <div class="container">
+    <!--<div class="toolbar">
+        <button id="themeToggleBtn" aria-pressed="false" type="button">다크 테마</button>
+    </div>-->
     <a href="https://github.com/NyanPunch" class="github-link">
         당첨된다면 제작자에게 팁을 주세요...
     </a>
@@ -128,59 +58,5 @@
         GitHub @NyanPunch
     </a>
 </div>
-
-<script>
-    // 로또 번호 생성 함수 (변경 없음)
-    function generateLottoNumbers() {
-        const count = parseInt(document.getElementById('lotto-count').value, 10);
-        const lottoOutput = document.getElementById('lotto-numbers');
-        lottoOutput.textContent = '';
-
-        if (isNaN(count) || count < 1 || count > 10) {
-            lottoOutput.textContent = '1에서 10 사이의 유효한 값을 입력해주세요.';
-            return;
-        }
-
-        let results = [];
-        for (let i = 0; i < count; i++) {
-            let numbers = [];
-            while (numbers.length < 6) {
-                let randomNumber = Math.floor(Math.random() * 45) + 1;
-                if (!numbers.includes(randomNumber)) {
-                    numbers.push(randomNumber);
-                }
-            }
-            numbers.sort((a, b) => a - b);
-            results.push(`[${i + 1}] ${numbers.join(' | ')}`);
-        }
-        lottoOutput.textContent = results.join('\n');
-    }
-
-    function generatePensionNumbers() {
-        const option = document.getElementById('pension-option').value;
-        const pensionOutput = document.getElementById('pension-numbers');
-        pensionOutput.textContent = '';
-        let results = [];
-
-        if (option === 'single') {
-            const group = Math.floor(Math.random() * 5) + 1;
-            const number = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-            results.push(`${group}조 ${number}`);
-        } else if (option === 'all-random') {
-            for (let i = 1; i <= 5; i++) {
-                const number = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-                results.push(`${i}조 ${number}`);
-            }
-        } else if (option === 'all-same') {
-            const number = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-            for (let i = 1; i <= 5; i++) {
-                results.push(`${i}조 ${number}`);
-            }
-        }
-
-        pensionOutput.textContent = results.join('\n');
-    }
-</script>
-
 </body>
 </html>
