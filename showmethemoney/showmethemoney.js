@@ -1,6 +1,7 @@
     // 로또 번호 생성 함수 (변경 없음)
     function generateLottoNumbers() {
         const count = parseInt(document.getElementById('lotto-count').value, 10);
+        const selectedNumbersInput = document.getElementById('lotto-selected-numbers').value;
         const lottoOutput = document.getElementById('lotto-numbers');
         lottoOutput.textContent = '';
 
@@ -9,9 +10,21 @@
             return;
         }
 
+        const selectedNumbers = selectedNumbersInput
+            .split(',')
+            .map(num => parseInt(num.trim(), 10))
+            .filter(num => !isNaN(num) && num >= 1 && num <= 45);
+
+        const uniqueSelectedNumbers = [...new Set(selectedNumbers)];
+    
+        if (uniqueSelectedNumbers.length > 5) {
+            lottoOutput.textContent = '포함할 번호는 중복 없이 최대 5개까지 입력할 수 있습니다.';
+            return;
+        }
+
         let results = [];
         for (let i = 0; i < count; i++) {
-            let numbers = [];
+            let numbers = [...uniqueSelectedNumbers];
             while (numbers.length < 6) {
                 let randomNumber = Math.floor(Math.random() * 45) + 1;
                 if (!numbers.includes(randomNumber)) {
