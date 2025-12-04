@@ -127,9 +127,13 @@ function persistState() {
         pct: isFinite(r.pct) ? r.pct : '',
         price: isFinite(r.price) ? r.price : '',
     }));
-    localStorage.setItem(LS_KEY, JSON.stringify(rows));
-    const total = parseFloat(totalEl.value);
-    if (isFinite(total)) localStorage.setItem(LS_TOTAL_KEY, String(total));
+    try {
+        localStorage.setItem(LS_KEY, JSON.stringify(rows));
+        const total = parseFloat(totalEl.value);
+        if (isFinite(total)) localStorage.setItem(LS_TOTAL_KEY, String(total));
+    } catch (e) {
+        console.warn('로컬 저장소에 상태를 저장하지 못했습니다.', e);
+    }
 }
 
 function restoreState() {
@@ -137,7 +141,7 @@ function restoreState() {
     const savedTotal = localStorage.getItem(LS_TOTAL_KEY);
     if (savedTotal) totalEl.value = savedTotal;
     if (savedRows.length === 0) {
-        // 기본 출력 행
+        // 기본 출력 행 (2025-12-04 기준 기본값)
         createRow({ name: 'S&P500', pct: 60, price: '' });
         createRow({ name: '나스닥100', pct: 20, price: '' });
         createRow({ name: '다우존스', pct: 10, price: '' });

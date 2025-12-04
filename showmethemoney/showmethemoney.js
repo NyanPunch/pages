@@ -1,4 +1,4 @@
-    // 로또 번호 생성 함수 (변경 없음)
+// 로또 번호 생성 함수 (변경 없음)
     function generateLottoNumbers() {
         const count = parseInt(document.getElementById('lotto-count').value, 10);
         const selectedNumbersInput = document.getElementById('lotto-selected-numbers').value;
@@ -61,3 +61,11 @@
 
         pensionOutput.textContent = results.join('\n');
     }
+
+    // 버튼을 DOMContentLoaded에서 바인딩합니다. (defer 스크립트와 함께 안전)
+    document.addEventListener('DOMContentLoaded', function () {
+        const lottoBtn = document.getElementById('generate-lotto');
+        const pensionBtn = document.getElementById('generate-pension');
+        if (lottoBtn) lottoBtn.addEventListener('click', generateLottoNumbers);
+        if (pensionBtn) pensionBtn.addEventListener('click', generatePensionNumbers);
+    });

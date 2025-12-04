@@ -1,5 +1,41 @@
 ## 📅 패치노트 (Patch Notes)
 
+### 📝 2025-12-04 업데이트 (페이지 리뉴얼 — 접근성·메타데이터 정비)
+
+**개요**
+
+- `howtodistribute`, `showmethemoney`, `moneydash` 하위 페이지를 Pages 가이드라인에 따라 리뉴얼했습니다. 주요 목표는 접근성(A11y) 개선, 페이지 메타데이터 일관화, 스크립트 로드 안정화 및 로컬 저장소 보호 강화입니다.
+- 루트(`Pages` 메인)와 다른 폴더는 수정하지 않았습니다.
+
+**변경 사항 요약**
+
+- `Pages/pages-prompt-guidelines.md` 파일 추가 — 페이지 생성/수정 시 따를 공통 프롬프트 및 메타데이터 규칙을 정의했습니다.
+
+- showmethemoney
+  - 페이지 메타데이터 주석 추가 및 `lastUpdated: 2025-12-04` 적용
+  - inline `onclick` 제거하고 버튼에 id 부여 후 DOMContentLoaded에서 이벤트 바인딩으로 변경
+  - 스크립트 로드에 `defer` 사용으로 로드 안정성 향상
+  - 결과 영역에 `role="region"` 과 `aria-live="polite"` 추가하여 스크린리더 친화성 개선
+
+- howtodistribute
+  - 페이지 메타데이터 주석 추가 및 `lastUpdated: 2025-12-04` 적용
+  - 요약 영역에 `aria-live` 추가(접근성 개선)
+  - 버튼에 명시적 `type="button"` 추가
+  - `persistState()`에 try/catch 추가하여 localStorage 접근 실패 상황 방어
+  - 기본 행 설명에 오늘 날짜(2025-12-04) 주석 반영
+
+- moneydash
+  - 페이지 메타데이터 주석 추가 및 `lastUpdated: 2025-12-04` 적용
+  - 차트 캔버스에 `role`/`aria-label` 추가
+  - 거래 목록에 `aria-live="polite"` 추가
+
+**주의 및 권장 작업**
+
+- 광고(GTM/Adsense) 스니펫은 보존되어 있습니다. 실제 배포 전 광고·분석 설정을 확인하세요.
+- 브라우저 확장(광고 차단)이나 localStorage 비활성화 환경에서 일부 기능이 제한될 수 있으니 테스트 권장합니다.
+
+---
+
 ### 📝 2025-10-29 업데이트 (MoneyDash 가계부)
 
 

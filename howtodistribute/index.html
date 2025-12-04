@@ -10,6 +10,19 @@
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <title>연금저축 적립식 배분 계산기</title>
+    <!-- Page metadata for pages-prompt-guidelines -->
+    <!--
+      title: 연금저축 적립식 배분 계산기
+      description: 월 적립 총액을 여러 자산에 비례로 배분하고 주수로 환산해주는 도구
+      route: /howtodistribute
+      layout: default
+      scripts: ["howtodistribute.js"]
+      styles: ["howtodistribute.css"]
+      analytics: GTM-KLNBMN45
+      locale: ko
+      author: NyanPunch
+      lastUpdated: 2025-12-04
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="howtodistribute.css" />
     <script defer src="howtodistribute.js"></script>
@@ -32,12 +45,12 @@
         <div class="total-line">
             <label for="total">월 적립 총액(원)</label>
             <input id="total" type="number" min="0" step="1000" placeholder="예: 500000" />
-            <button id="calcBtn">계산하기</button>
-            <button id="addRowBtn" class="secondary">행 추가</button>
-            <button id="resetBtn" class="danger">초기화</button>
+            <button id="calcBtn" type="button">계산하기</button>
+            <button id="addRowBtn" class="secondary" type="button">행 추가</button>
+            <button id="resetBtn" class="danger" type="button">초기화</button>
         </div>
         <div class="summary">
-            <span class="badge">퍼센트 합계: <strong id="sumPct">0%</strong></span>
+            <span class="badge">퍼센트 합계: <strong id="sumPct" aria-live="polite">0%</strong></span>
             <span class="badge">스케일 적용: <strong id="scaleInfo">-</strong></span>
             <span class="badge">행 개수: <strong id="rowCount">0</strong></span>
         </div>

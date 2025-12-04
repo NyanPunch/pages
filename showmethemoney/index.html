@@ -11,8 +11,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>복권 번호 생성기 🎰</title>
+    <!-- Page metadata for pages-prompt-guidelines -->
+    <!--
+      title: 복권 번호 생성기
+      description: 로또 및 연금복권 번호를 생성하는 간단한 도구
+      route: /showmethemoney
+      layout: default
+      scripts: ["showmethemoney.js"]
+      styles: ["showmethemoney.css"]
+      analytics: GTM-KLNBMN45
+      locale: ko
+      author: NyanPunch
+      lastUpdated: 2025-12-04
+    -->
     <link rel="stylesheet" href="showmethemoney.css">
-    <script src="showmethemoney.js"></script>
+    <script defer src="showmethemoney.js"></script>
     <!--<link rel="stylesheet" href="../common/theme.css" />
     <script defer src="../common/theme-toggle.js"></script>-->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1687774535061278"
@@ -41,8 +54,8 @@
             <label for="lotto-selected-numbers">포함할 번호 (쉼표로 구분, 예: 5, 10, 20):</label>
             <input type="text" id="lotto-selected-numbers" placeholder="1부터 45까지, 최대 5개">
         </div>
-        <button onclick="generateLottoNumbers()">번호 생성</button>
-        <div id="lotto-numbers" class="numbers"></div>
+        <button id="generate-lotto" type="button">번호 생성</button>
+        <div id="lotto-numbers" class="numbers" role="region" aria-live="polite"></div>
     </div>
 
     <div class="section">
@@ -55,8 +68,8 @@
                 <option value="all-same">모든 조(동일한 번호)</option>
             </select>
         </div>
-        <button onclick="generatePensionNumbers()">번호 생성</button>
-        <div id="pension-numbers" class="numbers"></div>
+        <button id="generate-pension" type="button">번호 생성</button>
+        <div id="pension-numbers" class="numbers" role="region" aria-live="polite"></div>
     </div>
     <a href="https://github.com/NyanPunch" class="github-link">
         GitHub @NyanPunch
