@@ -24,14 +24,14 @@
       lastUpdated: 2025-12-04
     -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../common/dark-theme.css" />
     <link rel="stylesheet" href="howtodistribute.css" />
     <script defer src="howtodistribute.js"></script>
-    <!--<link rel="stylesheet" href="../common/theme.css" />
-    <script defer src="../common/theme-toggle.js"></script>-->
+    <!--<script defer src="../common/theme-toggle.js"></script>-->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1687774535061278"
             crossorigin="anonymous"></script>
 </head>
-<body class="theme-dark">
+<body>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KLNBMN45"
                   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -40,34 +40,32 @@
     <!--<div class="toolbar">
         <button id="themeToggleBtn" aria-pressed="true" type="button">라이트 테마</button>
     </div>-->
-    <div class="card">
-        <h1>연금저축 적립식 배분 계산기</h1>
-        <div class="total-line">
-            <label for="total">월 적립 총액(원)</label>
-            <input id="total" type="number" min="0" step="1000" placeholder="예: 500000" />
-            <button id="calcBtn" type="button">계산하기</button>
-            <button id="addRowBtn" class="secondary" type="button">행 추가</button>
-            <button id="resetBtn" class="danger" type="button">초기화</button>
-        </div>
-        <div class="summary">
-            <span class="badge">퍼센트 합계: <strong id="sumPct" aria-live="polite">0%</strong></span>
-            <span class="badge">스케일 적용: <strong id="scaleInfo">-</strong></span>
-            <span class="badge">행 개수: <strong id="rowCount">0</strong></span>
-        </div>
-        <div class="row header">
-            <div>종목/메모</div>
-            <div class="right">비중(%)</div>
-            <div class="right">1주 가격(원, 선택)</div>
-            <div class="right">배분 금액(원)</div>
-            <div class="right">매수 주수(주)</div>
-            <div></div>
-        </div>
-        <div id="rows"></div>
-        <div class="foot">
-            - 퍼센트 합이 100%가 아니어도 총합 대비 비율로 자동 스케일링하여 배분합니다.<br />
-            - 주수는 소수점 불가 가정으로 내림 처리합니다. 수수료/세금은 미포함입니다.<br />
-            - 데이터는 브라우저에 자동 저장됩니다.
-        </div>
+    <h1>연금저축 적립식 배분 계산기</h1>
+    <div class="total-line">
+        <label for="total">월 적립 총액(원)</label>
+        <input id="total" type="number" min="0" step="1000" placeholder="예: 500000" />
+        <button id="calcBtn" type="button">계산하기</button>
+        <button id="addRowBtn" class="secondary" type="button">행 추가</button>
+        <button id="resetBtn" class="danger" type="button">초기화</button>
+    </div>
+    <div class="summary">
+        <span class="badge">퍼센트 합계: <strong id="sumPct" aria-live="polite">0%</strong></span>
+        <span class="badge">스케일 적용: <strong id="scaleInfo">-</strong></span>
+        <span class="badge">행 개수: <strong id="rowCount">0</strong></span>
+    </div>
+    <div class="row header">
+        <div>종목/메모</div>
+        <div class="right">비중(%)</div>
+        <div class="right">1주 가격(원, 선택)</div>
+        <div class="right">배분 금액(원)</div>
+        <div class="right">매수 주수(주)</div>
+        <div></div>
+    </div>
+    <div id="rows"></div>
+    <div class="foot">
+        - 퍼센트 합이 100%가 아니어도 총합 대비 비율로 자동 스케일링하여 배분합니다.<br />
+        - 주수는 소수점 불가 가정으로 내림 처리합니다. 수수료/세금은 미포함입니다.<br />
+        - 데이터는 브라우저에 자동 저장됩니다.
     </div>
 </div>
 </body>
