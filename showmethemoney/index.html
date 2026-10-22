@@ -12,7 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>복권 번호 생성기 🎰</title>
     <link rel="stylesheet" href="showmethemoney.css">
-    <script src="showmethemoney.js"></script>
+    <script defer src="showmethemoney.js"></script>
+    <script defer src="winning-numbers.js"></script>
     <!--<link rel="stylesheet" href="../common/theme.css" />
     <script defer src="../common/theme-toggle.js"></script>-->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1687774535061278"
@@ -31,6 +32,21 @@
         당첨된다면 제작자에게 팁을 주세요...
     </a>
     <h1>복권 번호 생성기 🎰</h1>
+    <section class="latest-results" aria-labelledby="results-title">
+        <div class="results-heading"><div><span class="results-eyebrow">LATEST DRAW</span><h2 id="results-title">지난 회차 당첨번호</h2></div><button id="refresh-results" type="button" class="refresh-results">새로고침</button></div>
+        <p class="results-description">가장 최근에 발표된 회차의 1등 번호입니다.</p>
+        <article class="draw-card" aria-labelledby="lotto-draw-title">
+            <div class="draw-heading"><h3 id="lotto-draw-title">로또 6/45</h3><span id="lotto-draw-meta" class="draw-meta"></span></div>
+            <div id="lotto-winning-numbers" class="winning-balls" aria-label="로또 당첨번호"></div>
+            <p id="lotto-draw-status" class="draw-status" role="status">당첨번호를 불러오는 중입니다.</p>
+        </article>
+        <article class="draw-card" aria-labelledby="pension-draw-title">
+            <div class="draw-heading"><h3 id="pension-draw-title">연금복권 720+</h3><span id="pension-draw-meta" class="draw-meta"></span></div>
+            <div id="pension-winning-numbers" class="winning-balls" aria-label="연금복권 1등 당첨번호"></div>
+            <p id="pension-draw-status" class="draw-status" role="status">당첨번호를 불러오는 중입니다.</p>
+        </article>
+        <p class="results-source">공개 데이터: <a href="https://github.com/nostra-team/nostra-data" target="_blank" rel="noopener noreferrer">nostra-data</a> · <a href="https://www.dhlottery.co.kr/" target="_blank" rel="noopener noreferrer">동행복권에서 최종 확인 ↗</a></p>
+    </section>
     <div class="section">
         <h2>로또 6/45</h2>
         <div class="input-group">

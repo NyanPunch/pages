@@ -88,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 패치 노트 불러오기 옵션 선택
     // loadPatchNotesFromMarkdown(); // .md 파일로 패치 노트를 관리하고 싶을 때 이 줄의 주석을 해제하세요.
-    loadSavedNotes(); // 로컬 스토리지로 패치 노트를 관리하고 싶을 때 이 줄의 주석을 해제하세요.
 
     // 로컬 스토리지에서 저장된 노트 불러오기
     function loadSavedNotes() {
