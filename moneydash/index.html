@@ -1,116 +1,301 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>가계부 (수입/지출 관리) 💰</title>
-    <link rel="stylesheet" href="moneydash.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-</head>
-<body>
-<div class="container">
-    <button id="manage-categories-btn" style="float: right; margin-top: -55px; padding: 8px 15px; background-color: #fbbc05; color: #333; border: none; border-radius: 5px; cursor: pointer;">
-        카테고리 관리 ⚙️
-    </button>
-    <h1>가계부 (수입/지출 관리) 💰</h1>
-    <div id="summary-area" style="margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #fafafa;">
-        <h2>월별 분석</h2>
-        <div style="margin-bottom: 15px;">
-            <label for="month-filter" style="font-weight: bold;">월 선택:</label>
-            <select id="month-filter" style="padding: 8px; border-radius: 5px;"></select>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="나의 수입과 지출을 기록하고 월별 소비를 살펴보는 개인 가계부 MoneyDash"
+    />
+    <title>MoneyDash · 나의 돈, 한눈에</title>
+    <link rel="stylesheet" href="moneydash.css" />
+    <script defer src="moneydash.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문으로 이동</a>
+    <aside class="sidebar">
+      <a class="brand" href="./" aria-label="MoneyDash 홈"
+        ><span class="brand-mark">m.</span> MoneyDash</a
+      >
+      <p class="sidebar-caption">MY PERSONAL FINANCE</p>
+      <nav aria-label="가계부 메뉴">
+        <a class="nav-link active" href="#overview"
+          ><span aria-hidden="true">◫</span> 한눈에 보기</a
+        >
+        <a class="nav-link" href="#ledger"
+          ><span aria-hidden="true">☷</span> 거래 내역</a
+        >
+        <button class="nav-link" id="categories-btn">
+          <span aria-hidden="true">▦</span> 카테고리 관리
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <p>차곡차곡 기록하는<br />나의 일상, 나의 자산.</p>
+        <a href="../">← 프로젝트 위키</a>
+      </div>
+    </aside>
+    <main id="main" class="workspace">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">작은 기록이 만드는 변화</p>
+          <h1>나의 돈, 한눈에<span class="accent">.</span></h1>
+          <p class="subtle">
+            수입과 지출을 정리하고, 이번 달의 흐름을 살펴보세요.
+          </p>
         </div>
-
-        <div style="display: flex; gap: 20px; justify-content: space-around; flex-wrap: wrap;">
-            <div style="width: 45%; min-width: 250px;">
-                <h3>지출 비중 (Expense)</h3>
-                <canvas id="expenseChart"></canvas>
-            </div>
-            <div style="width: 45%; min-width: 250px;">
-                <h3>수입 비중 (Income)</h3>
-                <canvas id="incomeChart"></canvas>
-            </div>
+        <button class="primary" id="add-transaction">＋ 내역 기록</button>
+      </header>
+      <div id="notice" class="notice" role="status" hidden></div>
+      <section id="overview" aria-label="월별 요약">
+        <div class="period-toolbar">
+          <div class="month-switcher">
+            <button
+              id="previous-month"
+              class="icon-button"
+              aria-label="이전 달"
+            >
+              ‹
+            </button>
+            <h2 id="period-title"></h2>
+            <button id="next-month" class="icon-button" aria-label="다음 달">
+              ›
+            </button>
+          </div>
+          <div class="period-controls">
+            <label class="sr-only" for="month-filter">조회 월</label
+            ><input type="month" id="month-filter" /><button
+              id="current-month"
+              class="quiet"
+            >
+              이번 달</button
+            ><label class="all-period"
+              ><input type="checkbox" id="all-period" /> 전체 기간</label
+            >
+          </div>
         </div>
-    </div>
-    <div id="forms-container">
-
-        <form id="expense-form" class="transaction-form">
-            <h3>💸 지출 내역 입력</h3>
-            <div class="form-group">
-                <label for="expense-date">날짜</label>
-                <input type="date" id="expense-date" required>
+        <div class="summary-grid">
+          <article class="summary-card balance-card">
+            <div class="card-label">
+              기간 잔액 <span aria-hidden="true">↗</span>
             </div>
-            <div class="form-group">
-                <label for="expense-amount">금액 (원)</label>
-                <input type="number" id="expense-amount" min="1" required>
+            <p class="big-number" id="balance-total">0<span>원</span></p>
+            <p id="balance-caption">수입에서 지출을 뺀 금액이에요.</p>
+          </article>
+          <article class="summary-card">
+            <div class="card-label">
+              총 수입
+              <span class="metric-icon income" aria-hidden="true">↓</span>
             </div>
-            <div class="form-group">
-                <label for="expense-category">카테고리</label>
-                <select id="expense-category" required>
-                </select>
+            <p class="big-number" id="income-total">0<span>원</span></p>
+            <p id="income-count">수입 내역 0건</p>
+          </article>
+          <article class="summary-card">
+            <div class="card-label">
+              총 지출
+              <span class="metric-icon expense" aria-hidden="true">↑</span>
             </div>
-            <div class="form-group">
-                <label for="expense-description">내용</label>
-                <input type="text" id="expense-description">
-            </div>
-            <button type="submit" class="add-btn expense-btn">지출 추가</button>
-        </form>
-
-        <form id="income-form" class="transaction-form">
-            <h3>💰 수입 내역 입력</h3>
-            <div class="form-group">
-                <label for="income-date">날짜</label>
-                <input type="date" id="income-date" required>
-            </div>
-            <div class="form-group">
-                <label for="income-amount">금액 (원)</label>
-                <input type="number" id="income-amount" min="1" required>
-            </div>
-            <div class="form-group">
-                <label for="income-category">카테고리</label>
-                <select id="income-category" required>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="income-description">내용</label>
-                <input type="text" id="income-description">
-            </div>
-            <button type="submit" class="add-btn income-btn">수입 추가</button>
-        </form>
-    </div>
-
-    <h2>거래 내역</h2>
-    <div class="list-header">
-        <div>날짜</div>
-        <div>유형</div>
-        <div>카테고리 / 내용</div>
-        <div>금액</div>
-        <div></div> </div>
-    <ul id="transactions-list">
-    </ul>
-</div>
-<div id="category-modal" style="display: none; position: fixed; z-index: 10; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
-    <div style="background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px;">
-        <h2>카테고리 관리</h2>
-
-        <div style="display: flex; gap: 20px;">
-            <div style="flex: 1;">
-                <h3>지출 (Expense)</h3>
-                <ul id="expense-category-list" style="list-style: none; padding: 0;"></ul>
-                <input type="text" id="new-expense-category" placeholder="새 지출 카테고리" style="width: 70%; padding: 5px;">
-                <button id="add-expense-category-btn" style="padding: 5px;">추가</button>
-            </div>
-
-            <div style="flex: 1;">
-                <h3>수입 (Income)</h3>
-                <ul id="income-category-list" style="list-style: none; padding: 0;"></ul>
-                <input type="text" id="new-income-category" placeholder="새 수입 카테고리" style="width: 70%; padding: 5px;">
-                <button id="add-income-category-btn" style="padding: 5px;">추가</button>
-            </div>
+            <p class="big-number" id="expense-total">0<span>원</span></p>
+            <p id="expense-count">지출 내역 0건</p>
+          </article>
         </div>
-
-        <button id="close-modal-btn" style="margin-top: 20px; padding: 10px 20px; background-color: #ccc; border: none; border-radius: 5px; cursor: pointer;">닫기</button>
-    </div>
-</div>
-<script src="moneydash.js"></script>
-</body>
+        <div class="analysis-grid">
+          <section class="panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">SPENDING BREAKDOWN</p>
+                <h2>어디에 썼을까요?</h2>
+              </div>
+              <span class="pill">지출 카테고리</span>
+            </div>
+            <div id="category-analysis" class="category-analysis"></div>
+          </section>
+          <section class="panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">MONTHLY FLOW</p>
+                <h2>최근 6개월 흐름</h2>
+              </div>
+              <div class="chart-legend">
+                <span class="income-dot">수입</span
+                ><span class="expense-dot">지출</span>
+              </div>
+            </div>
+            <div id="monthly-chart" class="monthly-chart"></div>
+            <p class="chart-footnote" id="flow-caption"></p>
+          </section>
+        </div>
+      </section>
+      <section id="ledger" class="panel ledger">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">TRANSACTIONS</p>
+            <h2>
+              거래 내역
+              <span id="transaction-count" class="count-badge">0</span>
+            </h2>
+          </div>
+          <div class="backup-actions">
+            <button id="export-data" class="quiet">↓ 백업</button
+            ><button id="import-data" class="quiet">↑ 복원</button
+            ><input
+              type="file"
+              id="backup-file"
+              accept="application/json,.json"
+              hidden
+            />
+          </div>
+        </div>
+        <div class="ledger-filters">
+          <div class="type-filters" role="group" aria-label="거래 유형">
+            <button class="filter active" data-filter="all" aria-pressed="true">
+              전체</button
+            ><button class="filter" data-filter="expense" aria-pressed="false">
+              지출</button
+            ><button class="filter" data-filter="income" aria-pressed="false">
+              수입
+            </button>
+          </div>
+          <button id="mobile-categories-btn" class="quiet mobile-categories">
+            카테고리 관리
+          </button>
+          <label class="search-field"
+            ><span aria-hidden="true">⌕</span
+            ><input
+              id="search"
+              type="search"
+              placeholder="내용 또는 카테고리 검색"
+              aria-label="내용 또는 카테고리 검색"
+              maxlength="500"
+          /></label>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <caption class="sr-only">
+              선택한 기간의 거래 내역
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">날짜</th>
+                <th scope="col">내역</th>
+                <th scope="col">카테고리</th>
+                <th scope="col" class="amount-column">금액</th>
+                <th scope="col"><span class="sr-only">관리</span></th>
+              </tr>
+            </thead>
+            <tbody id="transactions-list"></tbody>
+          </table>
+        </div>
+        <div id="empty-state" class="empty-state">
+          <span aria-hidden="true">↔</span>
+          <h3>아직 기록이 없어요</h3>
+          <p>첫 번째 수입이나 지출을 기록해 보세요.</p>
+          <button class="quiet" id="empty-add">＋ 첫 내역 기록하기</button>
+        </div>
+      </section>
+      <footer class="page-footer">
+        <span>MoneyDash · 나를 위한 작은 금융 습관</span
+        ><span>이 브라우저에 저장됩니다. 중요한 기록은 백업해 주세요.</span>
+      </footer>
+    </main>
+    <dialog id="transaction-dialog" aria-labelledby="transaction-title">
+      <form id="transaction-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">KEEP A LITTLE RECORD</p>
+            <h2 id="transaction-title">내역 기록</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button"
+            data-close="transaction-dialog"
+            aria-label="닫기"
+          >
+            ×
+          </button>
+        </div>
+        <fieldset class="type-choice">
+          <legend class="sr-only">거래 유형</legend>
+          <label
+            ><input type="radio" name="type" value="expense" checked />
+            지출</label
+          ><label><input type="radio" name="type" value="income" /> 수입</label>
+        </fieldset>
+        <label class="form-field"
+          >금액 (원)<input
+            id="transaction-amount"
+            name="amount"
+            type="number"
+            min="1"
+            max="1000000000000"
+            step="1"
+            inputmode="numeric"
+            required
+            placeholder="0"
+        /></label>
+        <div class="form-row">
+          <label class="form-field"
+            >날짜<input
+              id="transaction-date"
+              name="date"
+              type="date"
+              required /></label
+          ><label class="form-field"
+            >카테고리<select
+              id="transaction-category"
+              name="category"
+              required
+            ></select
+          ></label>
+        </div>
+        <label class="form-field"
+          >내용 <span class="subtle">선택</span
+          ><input
+            id="transaction-description"
+            name="description"
+            type="text"
+            maxlength="500"
+            placeholder="어떤 내역인가요?"
+        /></label>
+        <p id="form-error" class="form-error" role="alert"></p>
+        <div class="dialog-actions">
+          <button type="button" class="quiet" data-close="transaction-dialog">
+            취소</button
+          ><button type="submit" class="primary" id="save-transaction">
+            기록 저장
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="category-dialog" aria-labelledby="category-title">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">MAKE IT YOURS</p>
+          <h2 id="category-title">카테고리 관리</h2>
+        </div>
+        <button
+          class="icon-button"
+          data-close="category-dialog"
+          aria-label="닫기"
+        >
+          ×
+        </button>
+      </div>
+      <p class="subtle">기록에 사용 중인 카테고리는 삭제할 수 없어요.</p>
+      <form id="category-form" class="category-form">
+        <label class="sr-only" for="category-type">유형</label
+        ><select id="category-type">
+          <option value="expense">지출</option>
+          <option value="income">수입</option></select
+        ><label class="sr-only" for="category-name">새 카테고리 이름</label
+        ><input
+          id="category-name"
+          maxlength="40"
+          required
+          placeholder="새 카테고리"
+        /><button class="primary" type="submit">추가</button>
+      </form>
+      <p id="category-error" class="form-error" role="alert"></p>
+      <div id="category-lists"></div>
+    </dialog>
+  </body>
 </html>
