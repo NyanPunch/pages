@@ -24,3 +24,12 @@ Coverage includes:
 - Mobile document width and accessible category/transaction dialogs
 
 Onboarding's older helper outside the repository targets the previous MoneyDash DOM. Use this repository-owned suite after the rebuild.
+
+## Rain comparison prototype
+
+```sh
+node --test tests/rain-forecast.test.mjs
+python3 tests/rain_browser.py
+```
+
+These are independent of the existing MoneyDash/lottery suite. Weather API responses and geolocation are simulated; actual device positioning, live API availability/CORS, and meteorological forecast accuracy require separate verification. The rain page and model-comparison method are documented in [isitrainy/README.md](../isitrainy/README.md).
