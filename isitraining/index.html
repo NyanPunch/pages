@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="세 가지 수치예보 모델을 비교해 오늘과 내일 비 예보가 얼마나 일치하는지 살펴보세요."
+    />
+    <title>오늘 진짜 비옴? · 우산 챙길까</title>
+    <link rel="stylesheet" href="rain.css" />
+    <script type="module" src="rain.mjs"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="./"
+          ><span class="brand-icon" aria-hidden="true">☂</span> 오늘 진짜
+          비옴<span class="brand-question">?</span></a
+        ><a class="back-link" href="../">프로젝트 위키 ↗</a>
+      </header>
+      <main>
+        <section class="intro">
+          <p class="eyebrow">ONE SKY, DIFFERENT FORECASTS</p>
+          <h1>예보가 다르면,<br />한 번 더 비교해 봐요<span>.</span></h1>
+          <p class="intro-copy">
+            우산을 챙길까 고민될 때.<br />세 가지 예측 모델이 보는 오늘의 하늘을
+            모았어요.
+          </p>
+        </section>
+        <section class="location-panel" aria-labelledby="location-heading">
+          <div class="location-heading">
+            <div>
+              <p class="eyebrow">WHERE ARE YOU HEADED?</p>
+              <h2 id="location-heading">어디의 하늘이 궁금하세요?</h2>
+            </div>
+            <button id="locate" class="primary" type="button">
+              <span aria-hidden="true">⌖</span> 현재 위치로 확인
+            </button>
+          </div>
+          <p class="privacy-note">
+            위치 권한은 버튼을 눌렀을 때만 요청해요. 좌표는 예보 조회에 사용하며
+            이 페이지에 저장하지 않아요.
+          </p>
+          <form id="location-search" role="search">
+            <label class="sr-only" for="city-query">도시 검색</label
+            ><input
+              id="city-query"
+              type="search"
+              placeholder="도시 이름으로 찾기 · 예: 서울, 부산, Tokyo"
+              minlength="2"
+              maxlength="100"
+              required
+              autocomplete="off"
+            /><button class="secondary" id="search-button" type="submit">
+              도시 검색
+            </button>
+          </form>
+          <ul id="search-results" aria-label="검색한 지역"></ul>
+          <div class="quick-cities" aria-label="빠른 지역 선택">
+            <span>빠르게 보기</span><button data-city="seoul">서울</button
+            ><button data-city="busan">부산</button
+            ><button data-city="jeju">제주</button>
+          </div>
+          <p id="location-status" class="inline-status" role="status"></p>
+        </section>
+        <p
+          id="forecast-status"
+          class="forecast-status"
+          role="status"
+          hidden
+        ></p>
+        <div id="forecast" hidden>
+          <div class="forecast-toolbar">
+            <div>
+              <span class="location-pin" aria-hidden="true">⌖</span
+              ><strong id="place-name"></strong><span id="place-detail"></span>
+            </div>
+            <button id="refresh" class="text-button">예보 새로고침 ↻</button>
+          </div>
+          <div class="day-tabs" role="group" aria-label="예보 날짜">
+            <button id="today-tab" aria-pressed="true">남은 오늘</button
+            ><button id="tomorrow-tab" aria-pressed="false">내일</button>
+          </div>
+          <section id="verdict" class="verdict" aria-labelledby="verdict-title">
+            <div class="verdict-copy">
+              <p id="verdict-label" class="eyebrow">UMBRELLA CHECK</p>
+              <h2 id="verdict-title"></h2>
+              <p id="verdict-description"></p>
+              <div class="verdict-meta">
+                <span id="coverage"></span><span id="checked-at"></span>
+              </div>
+            </div>
+            <div class="weather-art" aria-hidden="true">
+              <svg viewBox="0 0 200 170" fill="none">
+                <path
+                  d="M42 100c-24 0-30-36-6-46 2-42 62-55 84-20 34-10 60 30 38 53-7 9-19 13-30 13H42Z"
+                  fill="#dcece8"
+                />
+                <path
+                  d="m58 121-9 18m43-18-9 18m43-18-9 18"
+                  stroke="#7cb3a6"
+                  stroke-width="6"
+                  stroke-linecap="round"
+                />
+                <circle cx="147" cy="32" r="22" fill="#edcf8f" />
+              </svg>
+            </div>
+          </section>
+          <div class="fact-strip">
+            <p>
+              <strong id="wet-hours">—</strong
+              ><span>과반수 모델이 강수를 예상한 시간</span>
+            </p>
+            <p>
+              <strong id="model-count">—</strong
+              ><span>현재 비교 가능한 모델</span>
+            </p>
+            <p>
+              <strong id="temperature">—</strong
+              ><span>선택한 기간의 예측 기온 범위</span>
+            </p>
+          </div>
+          <section class="panel" aria-labelledby="hourly-heading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">HOUR BY HOUR</p>
+                <h2 id="hourly-heading">언제 우산이 필요할까요?</h2>
+              </div>
+              <p id="timezone-label" class="small-note"></p>
+            </div>
+            <p class="section-copy">
+              강수량이 0.1mm 이상인 모델의 수를 비교해요. 비와 눈을 포함하며, 첫
+              구간은 현재 시간이 포함된 1시간 전체 예보예요.
+            </p>
+            <div
+              id="hourly-cards"
+              class="hourly-cards"
+              tabindex="0"
+              aria-label="시간대별 예보. 가로로 스크롤할 수 있습니다."
+            ></div>
+            <div class="legend">
+              <span class="legend-wet">과반수 강수 예측</span
+              ><span class="legend-mixed">예측이 엇갈림</span
+              ><span class="legend-dry">모두 0.1mm 미만</span
+              ><span class="legend-missing">비교 자료 부족</span>
+            </div>
+          </section>
+          <section class="panel" aria-labelledby="models-heading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">COMPARE THE MODELS</p>
+                <h2 id="models-heading">같은 하늘, 다른 예측</h2>
+              </div>
+              <span class="source-pill">Open-Meteo 제공</span>
+            </div>
+            <div id="model-cards" class="model-cards"></div>
+            <p class="section-copy table-hint">
+              시간별 카드의 ‘모델별 강수확률’은 각 모델이 제공한 값의 범위예요.
+              모델 합의 비율을 강수확률로 환산하지 않아요.
+            </p>
+          </section>
+        </div>
+        <section id="welcome" class="welcome">
+          <span aria-hidden="true">☂</span>
+          <h2>하늘을 비교할 준비가 됐어요.</h2>
+          <p>
+            현재 위치를 허용하거나 도시를 골라 주세요.<br />지역을 선택하기
+            전에는 위치나 날씨를 추측하지 않아요.
+          </p>
+        </section>
+        <section class="method-panel">
+          <p class="eyebrow">HOW IT WORKS</p>
+          <h2>예보 하나보다, 차이까지 살펴보기.</h2>
+          <div class="method-grid">
+            <article>
+              <span>01</span>
+              <h3>서로 다른 예측 모델</h3>
+              <p>
+                ECMWF IFS, NOAA GFS, DWD ICON을 비교해요. 여러 날씨 앱이 같은
+                모델을 쓸 수 있어 앱의 개수 대신 모델을 구분해요.
+              </p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>합의는 확률이 아니에요</h3>
+              <p>
+                세 모델 중 둘이 강수를 예상해도 실제 강수확률 67%라는 뜻은
+                아니에요. 예보의 일치와 차이를 그대로 보여드려요.
+              </p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>조회 시각을 확인해요</h3>
+              <p>
+                표시 시각은 이 페이지가 자료를 가져온 시각이에요. 모델마다 원본
+                예보 갱신 시각이 다를 수 있어요. 짧은 국지성 소나기는 놓칠 수
+                있어요.
+              </p>
+            </article>
+          </div>
+          <details>
+            <summary>우산 안내는 어떻게 정하나요?</summary>
+            <p>
+              선택한 기간의 한 시간이라도 과반수 모델이 0.1mm 이상을 예측하거나,
+              개별 모델의 강수확률이 60% 이상이면 우산을 권해요. 일부 모델만
+              강수를 예측하거나 개별 강수확률이 30% 이상이면 예보가 엇갈린다고
+              안내해요. 자료가 부족한 시간을 맑음으로 처리하지 않아요. 이 규칙은
+              편의를 위한 안내이며 관측 자료로 검증한 확률 예측은 아니에요.
+            </p>
+          </details>
+        </section>
+      </main>
+      <footer>
+        <span>오늘 진짜 비옴? · 우산 고민을 조금 가볍게.</span>
+        <p>
+          기상청 예보는 아직 포함하지 않습니다. 악천후 경보와 실시간 관측은
+          <a
+            href="https://www.weather.go.kr/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >기상청 날씨누리</a
+          >에서 확인하세요.
+        </p>
+        <p>
+          예보:
+          <a
+            href="https://open-meteo.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Open-Meteo</a
+          >
+          · 지명: GeoNames ·
+          <a
+            href="https://creativecommons.org/licenses/by/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >CC BY 4.0</a
+          >
+          · 원본 데이터를 시간대별로 비교·요약했습니다.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
