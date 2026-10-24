@@ -47,33 +47,39 @@
         </article>
         <p class="results-source">공개 데이터: <a href="https://github.com/nostra-team/nostra-data" target="_blank" rel="noopener noreferrer">nostra-data</a> · <a href="https://www.dhlottery.co.kr/" target="_blank" rel="noopener noreferrer">동행복권에서 최종 확인 ↗</a></p>
     </section>
-    <div class="section">
-        <h2>로또 6/45</h2>
-        <div class="input-group">
-            <label for="lotto-count">생성할 로또 세트 수:</label>
-            <input type="number" id="lotto-count" value="1" min="1" max="10">
-        </div>
-        <div class="input-group">
-            <label for="lotto-selected-numbers">포함할 번호 (쉼표로 구분, 예: 5, 10, 20):</label>
-            <input type="text" id="lotto-selected-numbers" placeholder="1부터 45까지, 최대 5개">
-        </div>
-        <button onclick="generateLottoNumbers()">번호 생성</button>
-        <div id="lotto-numbers" class="numbers"></div>
-    </div>
-
-    <div class="section">
-        <h2>연금복권 720+</h2>
-        <div class="input-group">
-            <label for="pension-option">생성 옵션:</label>
-            <select id="pension-option">
-                <option value="single">한 세트만</option>
-                <option value="all-random">모든 조(각기 다른 번호)</option>
-                <option value="all-same">모든 조(동일한 번호)</option>
-            </select>
-        </div>
-        <button onclick="generatePensionNumbers()">번호 생성</button>
-        <div id="pension-numbers" class="numbers"></div>
-    </div>
+    <section class="generator-panel" aria-labelledby="generator-title">
+        <div class="results-heading"><div><span class="results-eyebrow">NUMBER GENERATOR</span><h2 id="generator-title">나만의 번호 만들기</h2></div></div>
+        <p class="results-description">원하는 옵션을 고르고 새로운 번호를 만들어 보세요.</p>
+        <article class="draw-card generator-card" aria-labelledby="lotto-generator-title">
+            <div class="draw-heading"><h3 id="lotto-generator-title">로또 6/45</h3><span class="draw-meta">1~45 중 6개</span></div>
+            <div class="input-group">
+                <label for="lotto-count">생성할 세트 수</label>
+                <input type="number" id="lotto-count" value="1" min="1" max="10" aria-describedby="lotto-count-hint">
+                <p id="lotto-count-hint" class="input-hint">한 번에 1~10세트를 만들 수 있어요.</p>
+            </div>
+            <div class="input-group">
+                <label for="lotto-selected-numbers">꼭 포함할 번호 <span class="optional-label">선택</span></label>
+                <input type="text" id="lotto-selected-numbers" placeholder="예: 5, 10, 20" aria-describedby="lotto-selected-hint">
+                <p id="lotto-selected-hint" class="input-hint">1~45 사이의 번호를 쉼표로 구분해 최대 5개까지 입력하세요.</p>
+            </div>
+            <button class="generate-button" onclick="generateLottoNumbers()">로또 번호 생성</button>
+            <div id="lotto-numbers" class="numbers" role="status" aria-label="생성된 로또 번호"></div>
+        </article>
+        <article class="draw-card generator-card" aria-labelledby="pension-generator-title">
+            <div class="draw-heading"><h3 id="pension-generator-title">연금복권 720+</h3><span class="draw-meta">조 + 6자리 번호</span></div>
+            <div class="input-group">
+                <label for="pension-option">생성 방식</label>
+                <select id="pension-option">
+                    <option value="single">한 세트만</option>
+                    <option value="all-random">모든 조(각기 다른 번호)</option>
+                    <option value="all-same">모든 조(동일한 번호)</option>
+                </select>
+            </div>
+            <button class="generate-button" onclick="generatePensionNumbers()">연금복권 번호 생성</button>
+            <div id="pension-numbers" class="numbers" role="status" aria-label="생성된 연금복권 번호"></div>
+        </article>
+        <p class="results-description generator-note">번호는 무작위로 생성되며 당첨을 보장하지 않습니다.</p>
+    </section>
     <a href="https://github.com/NyanPunch" class="github-link">
         GitHub @NyanPunch
     </a>
