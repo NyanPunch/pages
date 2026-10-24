@@ -6,7 +6,7 @@ import {
   compareForecasts,
   summarize,
   nextDate,
-} from "../isitraining/forecast.mjs";
+} from "../isitrainy/forecast.mjs";
 
 const anchor = Date.parse("2026-10-23T15:00:00Z") / 1000; // Korea, October 24 at 00:00.
 const now = anchor + 12 * 3600 + 1200;

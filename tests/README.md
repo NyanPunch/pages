@@ -32,4 +32,4 @@ node --test tests/rain-forecast.test.mjs
 python3 tests/rain_browser.py
 ```
 
-These are independent of the existing MoneyDash/lottery suite. Weather API responses and geolocation are simulated; actual device positioning, live API availability/CORS, and meteorological forecast accuracy require separate verification. The rain page and model-comparison method are documented in [isitraining/README.md](../isitraining/README.md).
+These are independent of the existing MoneyDash/lottery suite. Weather API responses and geolocation are simulated; actual device positioning, live API availability/CORS, and meteorological forecast accuracy require separate verification. The rain page and model-comparison method are documented in [isitrainy/README.md](../isitrainy/README.md).

@@ -53,7 +53,7 @@ class RainBrowser(unittest.TestCase):
         self.context.route('https://api.open-meteo.com/v1/forecast?**', handle)
         self.page = self.context.new_page()
         self.page.on('pageerror', lambda error: self.errors.append(str(error)))
-        self.page.goto(self.base + '/isitraining/')
+        self.page.goto(self.base + '/isitrainy/')
 
     def tearDown(self):
         try: self.assertEqual(self.errors, [])

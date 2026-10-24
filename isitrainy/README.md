@@ -4,7 +4,7 @@
 
 ## 실행
 
-저장소 루트에서 `python3 -m http.server 8000 --bind 127.0.0.1`을 실행하고 `/isitraining/`을 엽니다. ES 모듈을 사용하므로 `file://` 대신 HTTP로 실행하세요. 외부 공개 시 위치 조회를 위해 HTTPS가 필요합니다. GitHub Pages의 HTTPS에서도 브라우저 위치 기능을 사용할 수 있습니다.
+저장소 루트에서 `python3 -m http.server 8000 --bind 127.0.0.1`을 실행하고 `/isitrainy/`을 엽니다. ES 모듈을 사용하므로 `file://` 대신 HTTP로 실행하세요. 외부 공개 시 위치 조회를 위해 HTTPS가 필요합니다. GitHub Pages의 HTTPS에서도 브라우저 위치 기능을 사용할 수 있습니다.
 
 ## 위치와 개인정보
 
