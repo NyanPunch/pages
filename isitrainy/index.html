@@ -43,11 +43,16 @@
             이 페이지에 저장하지 않아요.
           </p>
           <form id="location-search" role="search">
+            <label class="sr-only" for="search-scope">검색 국가</label>
+            <select id="search-scope" aria-label="검색 국가">
+              <option value="KR">대한민국</option>
+              <option value="all">전 세계</option>
+            </select>
             <label class="sr-only" for="city-query">도시 검색</label
             ><input
               id="city-query"
               type="search"
-              placeholder="도시 이름으로 찾기 · 예: 서울, 부산, Tokyo"
+              placeholder="시·군·구 이름 · 예: 천안, 충청남도 천안시"
               minlength="2"
               maxlength="100"
               required

@@ -28,8 +28,10 @@ Onboarding's older helper outside the repository targets the previous MoneyDash 
 ## Rain comparison prototype
 
 ```sh
-node --test tests/rain-forecast.test.mjs
+node --test tests/rain-forecast.test.mjs tests/rain-geocoding.test.mjs
 python3 tests/rain_browser.py
 ```
 
 These are independent of the existing MoneyDash/lottery suite. Weather API responses and geolocation are simulated; actual device positioning, live API availability/CORS, and meteorological forecast accuracy require separate verification. The rain page and model-comparison method are documented in [isitrainy/README.md](../isitrainy/README.md).
+
+City-search regressions cover Korean administrative aliases, country filtering, deduplication, regional qualifiers, domestic default behavior, overseas scope, and selecting Cheonan’s weather coordinates.

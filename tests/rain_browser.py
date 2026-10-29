@@ -87,7 +87,7 @@ class RainBrowser(unittest.TestCase):
 
     def test_search_selects_result_and_never_treats_api_names_as_html(self):
         payload = '<img src=x onerror="window.injected=1">'
-        self.page.route('https://geocoding-api.open-meteo.com/v1/search?**', lambda route: route.fulfill(json={'results': [{'name': payload, 'latitude': 35.18, 'longitude': 129.08, 'admin1': '부산', 'country': '대한민국'}]}))
+        self.page.route('https://geocoding-api.open-meteo.com/v1/search?**', lambda route: route.fulfill(json={'results': [{'name': payload, 'country_code': 'KR', 'latitude': 35.18, 'longitude': 129.08, 'admin1': '부산', 'country': '대한민국'}]}))
         self.page.locator('#city-query').fill('부산')
         self.page.locator('#search-button').click()
         expect(self.page.locator('.city-result')).to_have_count(1)
@@ -139,6 +139,54 @@ class RainBrowser(unittest.TestCase):
         expect(self.page.locator('#locate')).to_be_enabled()
         expect(self.page.locator('#place-name')).to_have_text('부산')
         self.assertEqual(len(self.requests), 3)
+
+    def test_cheonan_search_uses_korean_city_name_and_correct_weather_coordinates(self):
+        queries = []
+        def geocode(route):
+            params = parse_qs(urlparse(route.request.url).query)
+            queries.append(params)
+            result = {'id':1845759, 'name':'천안시', 'country_code':'KR', 'country':'대한민국', 'admin1':'충청남도', 'admin2':'천안시', 'feature_code':'PPLA2', 'population':658831, 'latitude':36.8065, 'longitude':127.1522} if params['name'][0] == '천안시' else {'id':13550479, 'name':'천안', 'country_code':'KP', 'country':'북한', 'admin1':'강원도', 'admin2':'이천군', 'latitude':38.49907, 'longitude':126.90094}
+            route.fulfill(json={'results':[result]})
+        self.page.route('https://geocoding-api.open-meteo.com/v1/search?**', geocode)
+        expect(self.page.locator('#search-scope')).to_have_value('KR')
+        self.page.locator('#city-query').fill('천안')
+        self.page.locator('#search-button').click()
+        expect(self.page.locator('.city-result')).to_have_count(1)
+        expect(self.page.locator('.city-result')).to_contain_text('대한민국 · 충청남도 · 천안시')
+        self.assertEqual({q['name'][0] for q in queries}, {'천안', '천안시'})
+        self.assertTrue(all(q.get('countryCode') == ['KR'] for q in queries))
+        self.page.locator('.city-result').click()
+        expect(self.page.locator('#place-name')).to_have_text('천안시')
+        expect(self.page.locator('#place-detail')).to_contain_text('충청남도')
+        self.assertTrue(all(float(q['latitude'][0]) == 36.8065 and float(q['longitude'][0]) == 127.1522 for q in self.requests))
+
+    def test_global_scope_preserves_overseas_city_search(self):
+        queries = []
+        def geocode(route):
+            queries.append(parse_qs(urlparse(route.request.url).query))
+            route.fulfill(json={'results':[{'id':1850147, 'name':'도쿄', 'country':'일본', 'country_code':'JP', 'admin1':'도쿄도', 'latitude':35.6895, 'longitude':139.6917}]})
+        self.page.route('https://geocoding-api.open-meteo.com/v1/search?**', geocode)
+        self.page.locator('#search-scope').select_option('all')
+        self.page.locator('#city-query').fill('Tokyo')
+        self.page.locator('#search-button').click()
+        expect(self.page.locator('.city-result')).to_contain_text('일본 · 도쿄도')
+        self.assertNotIn('countryCode',queries[0])
+        self.page.locator('.city-result').click()
+        expect(self.page.locator('#place-name')).to_have_text('도쿄')
+        self.assertTrue(all(float(q['longitude'][0]) == 139.6917 for q in self.requests))
+
+    def test_no_domestic_matches_does_not_silently_search_other_countries(self):
+        queries = []
+        def geocode(route):
+            queries.append(parse_qs(urlparse(route.request.url).query))
+            route.fulfill(json={'results':[]})
+        self.page.route('https://geocoding-api.open-meteo.com/v1/search?**',geocode)
+        self.page.locator('#city-query').fill('없는지역')
+        self.page.locator('#search-button').click()
+        expect(self.page.locator('#location-status')).to_contain_text('대한민국에서 검색 결과가 없어요')
+        expect(self.page.locator('.city-result')).to_have_count(0)
+        self.assertTrue(all(q.get('countryCode') == ['KR'] for q in queries))
+        self.assertEqual(self.requests,[])
 
     def test_mobile_layout_and_keyboard_search(self):
         for width in [320, 375, 768, 1280]:
