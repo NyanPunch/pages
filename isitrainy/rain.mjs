@@ -1,3 +1,4 @@
+import { searchNames, rankPlaces, regionDetail } from "./geocoding.mjs";
 import {
   MODELS,
   normalizeForecast,
@@ -362,33 +363,44 @@ $("#location-search").addEventListener("submit", async (event) => {
   $("#search-results").replaceChildren();
   $("#location-status").textContent = "지역을 찾고 있어요.";
   try {
-    const queryString = new URLSearchParams({
-      name: query,
-      count: "6",
-      language: "ko",
-      format: "json",
-    });
-    const data = await getJson(
-      `https://geocoding-api.open-meteo.com/v1/search?${queryString}`,
-      controller.signal,
+    const scope = $("#search-scope").value;
+    const responses = await Promise.allSettled(
+      searchNames(query, scope).map(async (name) => {
+        const queryString = new URLSearchParams({
+          name,
+          count: "20",
+          language: "ko",
+          format: "json",
+        });
+        if (scope === "KR") queryString.set("countryCode", "KR");
+        const data = await getJson(
+          `https://geocoding-api.open-meteo.com/v1/search?${queryString}`,
+          controller.signal,
+        );
+        return Array.isArray(data.results) ? data.results : [];
+      }),
     );
     if (controller !== searchController) return;
-    const results = (Array.isArray(data.results) ? data.results : []).filter(
-      (place) =>
-        typeof place.name === "string" &&
-        validCoordinates(place.latitude, place.longitude),
+    const succeeded = responses.filter(
+      (response) => response.status === "fulfilled",
+    );
+    if (!succeeded.length) throw new Error("All location searches failed");
+    const results = rankPlaces(
+      succeeded.flatMap((response) => response.value),
+      query,
+      scope,
     );
     $("#location-status").textContent = results.length
-      ? "확인할 지역을 선택해 주세요."
-      : "검색 결과가 없어요. 다른 도시 이름으로 찾아보세요.";
+      ? `${succeeded.length < responses.length ? "일부 검색 요청에 실패했어요. " : ""}국가와 행정구역을 확인한 뒤 지역을 선택해 주세요.`
+      : scope === "KR"
+        ? "대한민국에서 검색 결과가 없어요. 시·군·구 이름으로 검색하거나 해외 지역은 ‘전 세계’를 선택해 주세요."
+        : "검색 결과가 없어요. 다른 도시 이름으로 찾아보세요.";
     for (const result of results) {
       const place = {
         name: result.name,
         latitude: result.latitude,
         longitude: result.longitude,
-        detail: [result.admin1, result.country]
-          .filter((value) => typeof value === "string")
-          .join(" · "),
+        detail: regionDetail(result),
       };
       const button = element("button", "city-result");
       button.type = "button";
@@ -413,6 +425,18 @@ $("#location-search").addEventListener("submit", async (event) => {
     clearTimeout(timeout);
     if (controller === searchController) $("#search-button").disabled = false;
   }
+});
+
+$("#search-scope").addEventListener("change", () => {
+  searchController?.abort();
+  searchController = null;
+  $("#search-button").disabled = false;
+  $("#search-results").replaceChildren();
+  $("#location-status").textContent = "";
+  $("#city-query").placeholder =
+    $("#search-scope").value === "KR"
+      ? "시·군·구 이름 · 예: 천안, 충청남도 천안시"
+      : "도시 이름 · 예: Tokyo, Paris";
 });
 
 document.querySelectorAll("[data-city]").forEach((button) =>
