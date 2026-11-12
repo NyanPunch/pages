@@ -35,3 +35,12 @@ python3 tests/rain_browser.py
 These are independent of the existing MoneyDash/lottery suite. Weather API responses and geolocation are simulated; actual device positioning, live API availability/CORS, and meteorological forecast accuracy require separate verification. The rain page and model-comparison method are documented in [isitrainy/README.md](../isitrainy/README.md).
 
 City-search regressions cover Korean administrative aliases, country filtering, deduplication, regional qualifiers, domestic default behavior, overseas scope, and selecting Cheonan’s weather coordinates.
+
+## Allocation calculator
+
+```sh
+node --test tests/allocation.test.mjs
+python3 tests/allocation_browser.py
+```
+
+Checks cover exact whole-won allocation, proportional weights, actual purchase totals and cash, incomplete prices, invalid input, legacy settings, total-only autosave, literal text names, empty portfolios, downloaded JSON restoration, corrupt storage, failed writes, and mobile/desktop layout. Browser dependencies are shared with the suites above.

@@ -1,61 +1,111 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
+  <head>
     <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-KLNBMN45');</script>
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-KLNBMN45");
+    </script>
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
-    <title>연금저축 적립식 배분 계산기</title>
+    <title>적립금 배분 계산기</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="howtodistribute.css" />
-    <script defer src="howtodistribute.js"></script>
+    <script type="module" src="howtodistribute.js"></script>
     <!--<link rel="stylesheet" href="../common/theme.css" />
     <script defer src="../common/theme-toggle.js"></script>-->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1687774535061278"
-            crossorigin="anonymous"></script>
-</head>
-<body class="theme-dark">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KLNBMN45"
-                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-<div class="container">
-    <!--<div class="toolbar">
-        <button id="themeToggleBtn" aria-pressed="true" type="button">라이트 테마</button>
-    </div>-->
-    <div class="card">
-        <h1>연금저축 적립식 배분 계산기</h1>
-        <div class="total-line">
-            <label for="total">월 적립 총액(원)</label>
-            <input id="total" type="number" min="0" step="1000" placeholder="예: 500000" />
-            <button id="calcBtn">계산하기</button>
-            <button id="addRowBtn" class="secondary">행 추가</button>
-            <button id="resetBtn" class="danger">초기화</button>
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1687774535061278"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-KLNBMN45"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <main class="container">
+      <a class="wiki-link" href="../">위키 ↗</a>
+      <h1>적립금 배분 계산기</h1>
+      <section class="panel" aria-labelledby="total-label">
+        <label id="total-label" for="total">월 적립금</label>
+        <div class="amount-input">
+          <input
+            id="total"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="0"
+            aria-describedby="total-error"
+          /><span>원</span>
         </div>
-        <div class="summary">
-            <span class="badge">퍼센트 합계: <strong id="sumPct">0%</strong></span>
-            <span class="badge">스케일 적용: <strong id="scaleInfo">-</strong></span>
-            <span class="badge">행 개수: <strong id="rowCount">0</strong></span>
-        </div>
-        <div class="row header">
-            <div>종목/메모</div>
-            <div class="right">비중(%)</div>
-            <div class="right">1주 가격(원, 선택)</div>
-            <div class="right">배분 금액(원)</div>
-            <div class="right">매수 주수(주)</div>
-            <div></div>
-        </div>
+        <p id="total-error" class="field-error" role="status"></p>
+      </section>
+      <section class="panel summary" aria-label="계산 결과">
+        <dl>
+          <div>
+            <dt>매수금액</dt>
+            <dd id="spent">—</dd>
+          </div>
+          <div>
+            <dt>잔액</dt>
+            <dd id="remaining">—</dd>
+          </div>
+          <div>
+            <dt>비중 합계</dt>
+            <dd><span id="weight-sum">100%</span></dd>
+          </div>
+        </dl>
+        <div
+          id="allocation-bar"
+          class="allocation-bar"
+          role="img"
+          aria-label="종목별 배분 비중"
+        ></div>
+        <p id="calculation-note" class="calculation-note" role="status"></p>
+      </section>
+      <section class="panel assets" aria-labelledby="assets-title">
+        <h2 id="assets-title">종목별 배분</h2>
         <div id="rows"></div>
-        <div class="foot">
-            - 퍼센트 합이 100%가 아니어도 총합 대비 비율로 자동 스케일링하여 배분합니다.<br />
-            - 주수는 소수점 불가 가정으로 내림 처리합니다. 수수료/세금은 미포함입니다.<br />
-            - 데이터는 브라우저에 자동 저장됩니다.
+        <button id="add-row" class="action full" type="button">
+          ＋ 종목 추가
+        </button>
+      </section>
+      <section class="panel utilities" aria-label="설정 관리">
+        <div class="utility-buttons">
+          <button id="export-settings" class="outline" type="button">
+            ↓ 내보내기</button
+          ><button id="import-settings" class="outline" type="button">
+            ↑ 불러오기
+          </button>
         </div>
-    </div>
-</div>
-</body>
+        <input
+          id="settings-file"
+          type="file"
+          accept="application/json,.json"
+          hidden
+        />
+        <button id="reset" class="action full" type="button">초기화</button>
+        <p id="storage-notice" class="field-error" role="status"></p>
+      </section>
+      <footer>
+        <span id="save-status">자동 저장</span> · 수수료·세금 미포함
+      </footer>
+    </main>
+  </body>
 </html>
