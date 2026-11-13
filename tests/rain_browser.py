@@ -188,6 +188,49 @@ class RainBrowser(unittest.TestCase):
         self.assertTrue(all(q.get('countryCode') == ['KR'] for q in queries))
         self.assertEqual(self.requests,[])
 
+    def test_gps_http_failures_show_rate_limit_or_provider_status(self):
+        for status, expected in [(429, '조회 한도'), (503, '제공 서버'), (400, '요청을 거부')]:
+            with self.subTest(status=status):
+                self.handler = lambda route, model: route.fulfill(status=status, json={'error':True,'reason':'private provider response'})
+                self.page.locator('#locate').click()
+                expect(self.page.locator('#forecast-status')).to_contain_text(f'HTTP {status}')
+                expect(self.page.locator('#forecast-status')).to_contain_text(expected)
+                expect(self.page.locator('#forecast')).not_to_be_visible()
+                self.assertNotIn('private provider response',self.page.locator('#forecast-status').inner_text())
+
+    def test_gps_browser_network_failure_and_bad_payload_are_distinct(self):
+        self.handler = lambda route, model: route.abort()
+        self.page.locator('#locate').click()
+        expect(self.page.locator('#forecast-status')).to_contain_text('API에 연결하지 못했습니다')
+        self.handler = lambda route, model: route.fulfill(json={'unexpected':True})
+        self.page.locator('#locate').click()
+        expect(self.page.locator('#forecast-status')).to_contain_text('응답 형식')
+
+    def test_gps_expired_data_is_not_reported_as_network_failure(self):
+        old = fixture()
+        old['hourly']['time'] = [value - 10 * 86400 for value in old['hourly']['time']]
+        self.handler = lambda route, model: route.fulfill(json=old)
+        self.page.locator('#locate').click()
+        expect(self.page.locator('#forecast-status')).to_contain_text('현재 시각에 사용할 예보 자료가 없습니다')
+        expect(self.page.locator('#forecast')).not_to_be_visible()
+
+    def test_gps_request_deadline_is_reported_as_timeout(self):
+        self.page.evaluate('''() => {
+          const originalTimer = window.setTimeout;
+          window.setTimeout = (fn, ms, ...args) => originalTimer(fn, ms === 16000 ? 100 : ms, ...args);
+          const originalFetch = window.fetch;
+          window.fetch = (url, options) => String(url).startsWith('https://api.open-meteo.com/v1/forecast?')
+            ? new Promise((resolve, reject) => {
+                const abort = () => reject(new DOMException('aborted', 'AbortError'));
+                if (options.signal.aborted) abort();
+                else options.signal.addEventListener('abort', abort, {once:true});
+              })
+            : originalFetch(url, options);
+        }''')
+        self.page.locator('#locate').click()
+        expect(self.page.locator('#forecast-status')).to_contain_text('요청 시간이 초과됐습니다')
+        expect(self.page.locator('#refresh')).to_be_enabled()
+
     def test_mobile_layout_and_keyboard_search(self):
         for width in [320, 375, 768, 1280]:
             self.page.set_viewport_size({'width': width, 'height': 900})

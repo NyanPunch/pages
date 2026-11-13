@@ -28,7 +28,7 @@ Onboarding's older helper outside the repository targets the previous MoneyDash 
 ## Rain comparison prototype
 
 ```sh
-node --test tests/rain-forecast.test.mjs tests/rain-geocoding.test.mjs
+node --test tests/rain-forecast.test.mjs tests/rain-geocoding.test.mjs tests/rain-errors.test.mjs
 python3 tests/rain_browser.py
 ```
 
