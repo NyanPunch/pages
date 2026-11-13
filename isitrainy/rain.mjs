@@ -1,3 +1,8 @@
+import {
+  ForecastError,
+  failureMessage,
+  summarizeFailures,
+} from "./weather-errors.mjs";
 import { searchNames, rankPlaces, regionDetail } from "./geocoding.mjs";
 import {
   MODELS,
@@ -73,7 +78,7 @@ async function getJson(url, signal) {
     credentials: "omit",
     referrerPolicy: "no-referrer",
   });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  if (!response.ok) throw new ForecastError("http", response.status);
   return response.json();
 }
 async function fetchModel(place, model, signal) {
@@ -88,10 +93,15 @@ async function fetchModel(place, model, signal) {
     precipitation_unit: "mm",
     temperature_unit: "celsius",
   });
-  return normalizeForecast(
-    await getJson(`https://api.open-meteo.com/v1/forecast?${query}`, signal),
-    model.id,
+  const data = await getJson(
+    `https://api.open-meteo.com/v1/forecast?${query}`,
+    signal,
   );
+  try {
+    return normalizeForecast(data, model.id);
+  } catch {
+    throw new ForecastError("format");
+  }
 }
 
 async function loadForecast(place, newChoice = true) {
@@ -113,40 +123,50 @@ async function loadForecast(place, newChoice = true) {
   $("#refresh").disabled = true;
   setStatus(`${place.name}의 세 가지 예보를 비교하고 있어요.`);
   const timeout = setTimeout(() => controller.abort(), 16000);
+  let errors = [];
   try {
     const results = await Promise.allSettled(
       MODELS.map((model) => fetchModel(place, model, controller.signal)),
     );
     if (id !== requestId) return;
+    errors = results
+      .filter((result) => result.status === "rejected")
+      .map((result) => result.reason);
     const forecasts = results
       .filter((result) => result.status === "fulfilled")
       .map((result) => result.value);
     const useful = forecasts.filter((forecast) =>
       compareForecasts([forecast]).rows.some((row) => row.available > 0),
     );
-    if (!useful.length) throw new Error("No forecast data");
+    if (useful.length < forecasts.length)
+      errors.push(new ForecastError("no_data"));
+    if (!useful.length) {
+      if (!errors.length) errors.push(new ForecastError("no_data"));
+      throw new ForecastError("all_failed");
+    }
     latest = { place: { ...place }, forecasts: useful, checkedAt: Date.now() };
     selectedDay = "today";
     render();
     const failed = MODELS.length - useful.length;
     setStatus(
       failed
-        ? `${failed}개 모델의 자료를 가져오지 못했습니다. 조회된 자료만 비교하며, 없는 값을 맑음으로 처리하지 않아요.`
+        ? `${failed}개 모델의 자료를 가져오지 못했습니다. ${summarizeFailures(errors)} 조회된 자료만 비교하며, 없는 값을 맑음으로 처리하지 않아요.`
         : "",
     );
-  } catch {
+  } catch (error) {
     if (id !== requestId) return;
+    const detail = errors.length
+      ? summarizeFailures(errors)
+      : failureMessage(error);
     if (latest && samePlace(latest.place, place)) {
       render();
       setStatus(
-        "새 예보를 가져오지 못했습니다. 이전 조회 자료를 표시합니다. 조회 시각을 확인하고 다시 시도해 주세요.",
+        `새 예보를 가져오지 못했습니다. ${detail} 이전 조회 자료를 표시합니다. 조회 시각을 확인해 주세요.`,
       );
     } else {
       $("#forecast").hidden = true;
       $("#welcome").hidden = false;
-      setStatus(
-        "날씨 자료를 가져오지 못했습니다. 연결 상태를 확인하거나 다른 지역을 선택해 주세요.",
-      );
+      setStatus(`날씨 자료를 가져오지 못했습니다. ${detail}`);
     }
   } finally {
     clearTimeout(timeout);
